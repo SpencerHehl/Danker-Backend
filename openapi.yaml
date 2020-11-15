@@ -1,0 +1,147 @@
+openapi: 3.0.0
+info:
+  title: Danker-Backend
+  description: The Danker Backend application for storing and retrieving Danks
+  version: 0.1.0
+
+paths:
+  /api/danke:
+    post:
+      summary: Create a new Dank record
+      description: API path for storing new Dank submissions to the NoSQL DB
+      requestBody:
+        description: The Dank record
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DankObject'
+      responses:
+        '201':
+          description: Successful creation of new Dank record. Reponse is the Dank object stored.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DankObject'
+        '500':
+          description: Creation failure. Returns an object with error message and details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorObject'
+  /api/danke/recents:
+    get:
+      summary: Recent Danks
+      description: Get the most recently submitted Danks
+      responses:
+        '200':
+          description: Successful query with sorted Danks by recency.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecentDanks'
+        '500':
+          description: Failure to query for recent Danks
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorObject'
+  /api/leaders/danker:
+    get:
+      summary: Top Dankers
+      description: Get the people who submitted the most Danks
+      responses:
+        '200':
+          description: Successful query with sorted users by number of Danks given.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TopDankers'
+        '500':
+          description: Failure to query for top dankers
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorObject'
+  /api/leaders/dankee:
+    get:
+      summary: Top Dankees
+      description: Get the people who received the most Danks
+      responses:
+        '200':
+          description: Successful query with sorted users by number of Danks received.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TopDankees'
+        '500':
+          description: Failure to query for top dankees
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorObject'
+
+components:
+  schemas:
+    DankerUser:
+      type: object
+      description: A Danker User
+      properties:
+        displayName: 
+          type: string
+          description: The display name of the user
+        email:
+          type: string
+          description: The email of the user
+        userId:
+          type: string
+          description: The user id of the user
+    DankObject:
+      required:
+       - danker
+       - dankee
+       - dankText
+       - dateTime
+      properties:
+        danker:
+          description: The person who submitted the Dank
+          $ref: '#/components/schemas/DankerUser'
+        dankee:
+          description: The person who received the Dank
+          $ref: '#/components/schemas/DankerUser'
+        dankText:
+          type: string
+          description: The text of the submitted Dank
+        dateTime:
+          type: string
+          description: The UTC datetime string of the Dank submission
+    RecentDanks:
+      type: array
+      items:
+        $ref: '#/components/schemas/DankObject'
+    TopDankers:
+      type: array
+      items:
+        type: object
+        properties:
+          user:
+            $ref: '#/components/schemas/DankerUser'
+          count:
+            type: number
+            description: Count of submitted Danks
+    TopDankees:
+      type: array
+      items:
+        type: object
+        properties:
+          user:
+            $ref: '#/components/schemas/DankerUser'
+          count:
+            type: number
+            description: Count of received Danks
+    ErrorObject:
+            properties:
+                error:
+                    type: string
+                    description: The error message associated with the failed request
+    
