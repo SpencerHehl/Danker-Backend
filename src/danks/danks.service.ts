@@ -16,10 +16,10 @@ export class DanksService {
         try {
             const dankList = await Dank.find()
                 .sort({
-                    dateTime: 'desc'
+                    dateTime: 'desc',
                 })
                 .limit(3)
-                .exec()
+                .exec();
             return dankList;
         } catch (err) {
             console.error(err);

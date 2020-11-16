@@ -4,7 +4,9 @@
   "description": "The backend service to the Danker App",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./dist/index.js",
+    "start-local": "tsc && node ./dist/index.js"
   },
   "author": "Spencer Hehl",
   "license": "ISC",
