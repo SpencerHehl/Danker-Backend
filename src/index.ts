@@ -16,8 +16,8 @@ const options: any = {
     useUnifiedTopology: true,
 };
 
-const cosmosDbName = '';
-const primaryMasterKey = '';
+const cosmosDbName = 'danker-backend';
+const primaryMasterKey = 'PCBKPA6klF45RPeWLz1uovEQKiK3330Mn2Qk4DafmENu5OFrQ3JK0VNjjGx5LkDRkk2rox826lFxGyF29Mwkbg==';
 const mongooseUri = `mongodb://${cosmosDbName}:${primaryMasterKey}@${cosmosDbName}.documents.azure.com:10255/mean-dev?ssl=true&sslverifycertificate=false`;
 
 try {
