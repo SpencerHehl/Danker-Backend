@@ -47,7 +47,7 @@ export class DanksService {
         }
     }
 
-    public async getDankerLeaders(dateFilter: string): Promise<IDankLeaderStat[]> {
+    public async getDankerLeaders(dateFilter): Promise<IDankLeaderStat[]> {
         try {
             const convDateFilter = this.convertDateFilter(dateFilter);
             const topDankers = await Dank.aggregate()
@@ -68,7 +68,7 @@ export class DanksService {
         }
     }
 
-    public async getDankeeLeaders(dateFilter: string): Promise<IDankLeaderStat[]> {
+    public async getDankeeLeaders(dateFilter): Promise<IDankLeaderStat[]> {
         try {
             const convDateFilter = this.convertDateFilter(dateFilter);
             const topDankees = await Dank.aggregate()

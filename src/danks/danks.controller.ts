@@ -24,18 +24,20 @@ const getRecentDanks = async (): Promise<IDank[]> => {
     }
 };
 
-const getDankerLeaders = async (): Promise<IDankLeaderStat[]> => {
+const getDankerLeaders = async (req: Request): Promise<IDankLeaderStat[]> => {
     try {
-        const dankerLeaders = await dankService.getDankerLeaders();
+        const dateFilter = req.query.filter;
+        const dankerLeaders = await dankService.getDankerLeaders(dateFilter);
         return dankerLeaders;
     } catch (err) {
         throw new Error(err.message);
     }
 };
 
-const getDankeeLeaders = async (): Promise<IDankLeaderStat[]> => {
+const getDankeeLeaders = async (req: Request): Promise<IDankLeaderStat[]> => {
     try {
-        const dankeeLeaders = await dankService.getDankeeLeaders();
+        const dateFilter = req.query.filter;
+        const dankeeLeaders = await dankService.getDankeeLeaders(dateFilter);
         return dankeeLeaders;
     } catch (err) {
         throw new Error(err.message);

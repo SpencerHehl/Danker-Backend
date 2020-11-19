@@ -26,7 +26,7 @@ DanksRouter.route('/danke/recents').get((req: Request, res: Response) => {
 });
 
 DanksRouter.route('/leaders/danker').get((req: Request, res: Response) => {
-    DankController.getDankerLeaders()
+    DankController.getDankerLeaders(req)
         .then((leaders: IDankLeaderStat[]) => {
             res.status(200).json(leaders);
         })
@@ -36,7 +36,7 @@ DanksRouter.route('/leaders/danker').get((req: Request, res: Response) => {
 });
 
 DanksRouter.route('/leaders/dankee').get((req: Request, res: Response) => {
-    DankController.getDankeeLeaders()
+    DankController.getDankeeLeaders(req)
         .then((leaders: IDankLeaderStat[]) => {
             res.status(200).json(leaders);
         })
