@@ -50,6 +50,14 @@ paths:
     get:
       summary: Top Dankers
       description: Get the people who submitted the most Danks
+      parameters:
+      - name: filter
+        in: query
+        required: true
+        description: The date filter for the leadeboard query
+        schema:
+          type:
+            string
       responses:
         '200':
           description: Successful query with sorted users by number of Danks given.
@@ -67,6 +75,14 @@ paths:
     get:
       summary: Top Dankees
       description: Get the people who received the most Danks
+      parameters:
+      - name: filter
+        in: query
+        required: true
+        description: The date filter for the leadeboard query
+        schema:
+          type:
+            string
       responses:
         '200':
           description: Successful query with sorted users by number of Danks received.

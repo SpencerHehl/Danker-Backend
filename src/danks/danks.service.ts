@@ -1,6 +1,7 @@
 import { Dank, IDank } from './danks.model';
 import { User, IUser } from './user.model';
 import { IDankLeaderStat } from './leaderstat.model';
+import moment from 'moment';
 
 export class DanksService {
     public async submitNewDank(dank: IDank): Promise<IDank> {
@@ -46,9 +47,11 @@ export class DanksService {
         }
     }
 
-    public async getDankerLeaders(): Promise<IDankLeaderStat[]> {
+    public async getDankerLeaders(dateFilter: string): Promise<IDankLeaderStat[]> {
         try {
+            const convDateFilter = this.convertDateFilter(dateFilter);
             const topDankers = await Dank.aggregate()
+                .match({ dateTime: { $gt: convDateFilter } })
                 .group({ _id: '$danker._id', count: { $sum: 1 } })
                 .sort({ count: -1 })
                 .lookup({
@@ -65,9 +68,11 @@ export class DanksService {
         }
     }
 
-    public async getDankeeLeaders(): Promise<IDankLeaderStat[]> {
+    public async getDankeeLeaders(dateFilter: string): Promise<IDankLeaderStat[]> {
         try {
+            const convDateFilter = this.convertDateFilter(dateFilter);
             const topDankees = await Dank.aggregate()
+                .match({ dateTime: { $gt: convDateFilter } })
                 .group({ _id: '$dankee._id', count: { $sum: 1 } })
                 .sort({ count: -1 })
                 .lookup({
@@ -82,5 +87,28 @@ export class DanksService {
             console.error(err);
             throw new Error(`Unable to retrieve dankee leaders due to error.`);
         }
+    }
+
+    private convertDateFilter(dateFilter: string): string {
+        const utcNow = moment.utc();
+        let newFilter: string;
+        switch (dateFilter) {
+            case 'today':
+                newFilter = utcNow.startOf('day').toISOString();
+                break;
+            case 'week':
+                newFilter = utcNow.startOf('day').subtract(7, 'd').toISOString();
+                break;
+            case 'month':
+                newFilter = utcNow.startOf('day').subtract(30, 'd').toISOString();
+                break;
+            case 'alltime':
+                newFilter = '';
+                break;
+            default:
+                newFilter = '';
+                break;
+        }
+        return newFilter;
     }
 }
