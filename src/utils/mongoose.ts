@@ -12,24 +12,14 @@ export class MongooseService {
      * Connect to the in-memory database.
      */
     connect = async (): Promise<void | typeof mongoose> => {
-        const uri = await this.mongod.getConnectionString();
-
-        const mongooseOpts: mongoose.ConnectionOptions = {
-            useUnifiedTopology: true,
-            useNewUrlParser: true,
-            bufferCommands: false,
-        };
-
-        return await mongoose
-            .connect(uri, mongooseOpts, (err) => {
-                if (err) {
-                    console.error('Error connecting to in-memory MongoDB', { error: err });
-                    process.exit(1);
-                }
-            })
-            .catch((reason) => {
-                console.log('error attempting to connect to MongoDB', reason);
-            });
+        this.mongod.getUri().then(async (mongoUri) => {
+            const mongooseOpts: mongoose.ConnectionOptions = {
+                useUnifiedTopology: true,
+                useNewUrlParser: true,
+                bufferCommands: false,
+            };
+            await mongoose.connect(mongoUri, mongooseOpts);
+        });
     };
 
     /**

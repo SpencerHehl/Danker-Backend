@@ -52,6 +52,40 @@ stages:
     - upload: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
       artifact: drop
 
+- stage: Testing
+  displayName: Unit Testing
+  jobs:
+  - job: UnitTestJob
+    displayName: Backend Unit Tests
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+      - task: UseNode@1
+        inputs:
+          checkLatest: true
+      - task: CmdLine@2
+        displayName: NPM Install
+        inputs:
+          script: npm install
+      - task: CmdLine@2
+        displayName: Run Tests
+        inputs:
+          script: npm run test
+      - task: PublishTestResults@2
+        displayName: Publish Test Results
+        condition: succeededOrFailed()
+        inputs:
+            testRunner: 'JUnit'
+            testResultsFiles: '**/test-results.xml'
+            searchFolder: '$(System.DefaultWorkingDirectory)'
+      - task: PublishCodeCoverageResults@1
+        displayName: Publish Code Coverage Results
+        condition: succeededOrFailed()
+        inputs:
+            codeCoverageTool: cobertura
+            summaryFileLocation: $(System.DefaultWorkingDirectory)/coverage/*-coverage.xml
+        timeoutInMinutes: 3
+
 - stage: Deploy
   displayName: Deploy stage
   dependsOn: Build
