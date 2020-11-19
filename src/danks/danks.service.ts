@@ -51,7 +51,7 @@ export class DanksService {
         try {
             const convDateFilter = this.convertDateFilter(dateFilter);
             const topDankers = await Dank.aggregate()
-                .match({ dateTime: { $gt: convDateFilter } })
+                .match({ dateTime: { $gt: new Date(convDateFilter) } })
                 .group({ _id: '$danker._id', count: { $sum: 1 } })
                 .sort({ count: -1 })
                 .lookup({
@@ -72,7 +72,7 @@ export class DanksService {
         try {
             const convDateFilter = this.convertDateFilter(dateFilter);
             const topDankees = await Dank.aggregate()
-                .match({ dateTime: { $gt: convDateFilter } })
+                .match({ dateTime: { $gt: new Date(convDateFilter) } })
                 .group({ _id: '$dankee._id', count: { $sum: 1 } })
                 .sort({ count: -1 })
                 .lookup({
@@ -89,7 +89,7 @@ export class DanksService {
         }
     }
 
-    private convertDateFilter(dateFilter: string): string {
+    public convertDateFilter(dateFilter: string): string {
         const utcNow = moment.utc();
         let newFilter: string;
         switch (dateFilter) {
@@ -103,10 +103,10 @@ export class DanksService {
                 newFilter = utcNow.startOf('day').subtract(30, 'd').toISOString();
                 break;
             case 'alltime':
-                newFilter = '';
+                newFilter = utcNow.startOf('year').toISOString();
                 break;
             default:
-                newFilter = '';
+                newFilter = utcNow.startOf('year').toISOString();
                 break;
         }
         return newFilter;
